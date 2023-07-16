@@ -25,7 +25,7 @@ public class ProductService {
         //new try
         Product savedProduct = repo.save(product);
         if(!image.getImageName().isBlank()){
-            System.out.println("It's null");
+            //System.out.println("It's null");
             Image savedImage = imageRepo.save(image);
             long id = savedProduct.getId();
             repo.updateImageIdById(id, savedImage);
@@ -44,18 +44,21 @@ public class ProductService {
     }
     public void updateProductById(long id, Product product, Image image){
         repo.updateById(id, product.getSku(), product.getName(), product.getPrice(), product.getStatus());
-        Optional<Product> currentProduct = repo.findById(id);
-        Image currentImage = currentProduct.get().getImage();
 
-        if(currentImage == null) {
-            Image updatedImage = imageRepo.save(image);
-            long newImageId = updatedImage.getId();
-            product.setImage(updatedImage);
-            repo.updateImageIdById(id, updatedImage);
-        }
-        else {
-            long imageId = currentImage.getId();
-            imageRepo.updateImageById(imageId, image.getImageName(), image.getImageLink());
+
+        if(!image.getImageName().isBlank()){
+            Optional<Product> currentProduct = repo.findById(id);
+            Image currentImage = currentProduct.get().getImage();
+            if(currentImage == null){
+                Image savedImage = imageRepo.save(image);
+                repo.updateImageIdById(id, savedImage);
+            }
+            else{
+                String imageName = image.getImageName();
+                String imageLink  = image.getImageLink();
+                long currentImageId = currentImage.getId();
+                imageRepo.updateImageById(currentImageId, imageName, imageLink);
+            }
         }
     }
 //    public List<Product> getSortedProducts(String sort){
