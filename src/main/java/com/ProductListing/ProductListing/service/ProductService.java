@@ -19,13 +19,8 @@ public class ProductService {
     private  ImageRepository imageRepo;
 
     public ResponseEntity<Product> createProduct(Product product, Image image){
-        //Image image1 = imageRepo.save(image);
-        //product.setImage(image);
-        //repo.save(product);
-        //new try
         Product savedProduct = repo.save(product);
         if(!image.getImageName().isBlank()){
-            //System.out.println("It's null");
             Image savedImage = imageRepo.save(image);
             long id = savedProduct.getId();
             repo.updateImageIdById(id, savedImage);
@@ -61,8 +56,9 @@ public class ProductService {
             }
         }
     }
-//    public List<Product> getSortedProducts(String sort){
-//        return;
-//    }
-
+    public void updateStatusById(long id){
+        Optional<Product> product = repo.findById(id);
+        boolean status = !product.get().getStatus();
+        repo.updateStatusById(id, status);
+    }
 }

@@ -4,7 +4,7 @@ import com.ProductListing.ProductListing.model.Image;
 import com.ProductListing.ProductListing.model.Product;
 import com.ProductListing.ProductListing.service.ProductService;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,10 +14,8 @@ import java.util.Optional;
 @RequestMapping("api/v1/product")
 @RestController
 public class ProductController {
+    @Autowired
     private ProductService productService;
-    public ProductController(ProductService productService) {
-        this.productService = productService;
-    }
 
     @GetMapping
     public List<Product> getAllProducts(){
@@ -33,9 +31,6 @@ public class ProductController {
         Image image = productCreationRequest.getImage();
 
         return productService.createProduct(product, image);
-//        ResponseEntity<Product> h = new ResponseEntity<Product>(product, HttpStatus.CREATED);
-//        System.out.println(h);
-//        return h;
     }
     @PutMapping(path = "/{id}")
     public void updateProduct(@PathVariable("id") long id, @RequestBody ProductCreationRequest productCreationRequest){
@@ -48,9 +43,8 @@ public class ProductController {
         productService.deleteProductById(id);
     }
 
-    @GetMapping(path = "/sort")
-    public void getSortedProducts(@RequestBody Object obj){
-        // sort1 = obj.toA
-        System.out.println("Sorted Products by: "+obj);
+    @PutMapping(path = "/status/{id}")
+    public void updateStatusById(@PathVariable("id") long id){
+        productService.updateStatusById(id);
     }
 }
